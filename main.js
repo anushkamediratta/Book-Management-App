@@ -34,13 +34,7 @@ form.addEventListener("submit",(e)=>{
      addRow(book)
 })
 
-tableList.addEventListener("click",(e)=>{
-    removeRow(e)
-    let books=JSON.parse(localStorage.getItem("books"))
-    const isbn = e.target.parentElement.previousElementSibling.textContent
-    const newbooks=books.filter(book=>book.isbn!==isbn)
-    localStorage.setItem("books",JSON.stringify(newbooks))
-})
+
 
 function clearAllFields(){
     document.querySelector("#title").value=''
