@@ -1,6 +1,11 @@
 const form=document.querySelector("#book-form")
 const tableList=document.querySelector("#book-list")
 
+window.addEventListener("DOMContentLoaded",(e)=>{
+    let books=JSON.parse(localStorage.getItem("books"))
+    books.forEach(book=> createRow(book.title,book.author,book.isbn))
+})
+
 form.addEventListener("submit",(e)=>{
     e.preventDefault()
     const title=document.querySelector("#title").value
@@ -29,6 +34,14 @@ form.addEventListener("submit",(e)=>{
      addRow(book)
 })
 
+tableList.addEventListener("click",(e)=>{
+    removeRow(e)
+    let books=JSON.parse(localStorage.getItem("books"))
+    const isbn = e.target.parentElement.previousElementSibling.textContent
+    const newbooks=books.filter(book=>book.isbn!==isbn)
+    localStorage.setItem("books",JSON.stringify(newbooks))
+})
+
 function clearAllFields(){
     document.querySelector("#title").value=''
     document.querySelector("#author").value=''
@@ -36,22 +49,15 @@ function clearAllFields(){
 }
 
 function createRow(title,author,isbn){
-    tableList.innerHTML=`<tr>
-     <td>${title}</td>
+    
+     const tr=document.createElement("tr")
+     tr.innerHTML=`<td>${title}</td>
      <td>${author}</td>
      <td>${isbn}</td>
-     <td><a href="#" class="btn btn-danger float-right delete">X</td>
-     </tr>`
+     <td><a href="#" class="btn btn-danger float-right delete">X</td>`
+     tableList.appendChild(tr)
+
 }
-function deleteBook(el) {
-    if (el.classList.contains('delete')) {
-        if (confirm('Are You Sure You Want to delete this'))
-            el.parentElement.parentElement.remove();
-    }
-}
-document.querySelector('#book-list').addEventListener('click', (e) => {
-    deleteBook(e.target);
-})
 
 function addRow(book){
 
@@ -64,4 +70,11 @@ function addRow(book){
     newbook.push(book)
 
     localStorage.setItem("books",JSON.stringify(newbook))
+}
+
+function removeRow(e){
+    if(e.target.classList.contains("delete")){
+        if (confirm('Are You Sure You Want to delete this'))
+        tableList.removeChild(e.target.parentElement.parentElement)
+    }
 }
